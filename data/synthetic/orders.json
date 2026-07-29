@@ -1,0 +1,134 @@
+[
+  {
+    "id": "ORD-001",
+    "type": "order",
+    "customer_id": "CUST-A123",
+    "date": "2024-01-15",
+    "items": [
+      {
+        "sku": "SKU-4521",
+        "name": "Wireless Mouse",
+        "quantity": 2,
+        "unit_price": 29.99
+      },
+      {
+        "sku": "SKU-7823",
+        "name": "USB-C Cable",
+        "quantity": 1,
+        "unit_price": 12.99
+      }
+    ],
+    "subtotal": 72.97,
+    "tax": 5.84,
+    "total": 78.81,
+    "status": "shipped",
+    "shipping_address": "123 Oak St, Portland, OR 97201",
+    "warehouse": "PDX-01"
+  },
+  {
+    "id": "ORD-002",
+    "type": "order",
+    "customer_id": "CUST-B456",
+    "date": "2024-01-16",
+    "items": [
+      {
+        "sku": "SKU-3301",
+        "name": "Mechanical Keyboard",
+        "quantity": 1,
+        "unit_price": 89.99
+      }
+    ],
+    "subtotal": 89.99,
+    "tax": 7.20,
+    "total": 97.19,
+    "status": "processing",
+    "shipping_address": "456 Elm Ave, Seattle, WA 98101",
+    "warehouse": "SEA-02"
+  },
+  {
+    "id": "ORD-003",
+    "type": "order",
+    "customer_id": "CUST-C789",
+    "date": "2024-01-17",
+    "items": [
+      {
+        "sku": "SKU-6645",
+        "name": "Monitor Stand",
+        "quantity": 1,
+        "unit_price": 34.50
+      }
+    ],
+    "subtotal": 34.50,
+    "tax": 2.76,
+    "total": 37.26,
+    "status": "delivered",
+    "shipping_address": "789 Pine Rd, Vancouver, BC V6B 1K3",
+    "warehouse": "YVR-01"
+  },
+  {
+    "id": "ORD-004",
+    "type": "order",
+    "customer_id": "CUST-D012",
+    "date": "2024-01-18",
+    "items": [
+      {
+        "sku": "SKU-2211",
+        "name": "Laptop Stand",
+        "quantity": 1,
+        "unit_price": 45.00
+      },
+      {
+        "sku": "SKU-4521",
+        "name": "Wireless Mouse",
+        "quantity": 1,
+        "unit_price": 29.99
+      }
+    ],
+    "subtotal": 74.99,
+    "tax": 6.00,
+    "total": 80.99,
+    "status": "shipped",
+    "shipping_address": "321 Maple Dr, Los Angeles, CA 90001",
+    "warehouse": "LAX-03"
+  },
+  {
+    "id": "ORD-005",
+    "type": "order",
+    "customer_id": "CUST-E345",
+    "date": "2024-01-19",
+    "items": [
+      {
+        "sku": "SKU-9876",
+        "name": "Desk Lamp",
+        "quantity": 2,
+        "unit_price": 22.50
+      }
+    ],
+    "subtotal": 45.00,
+    "tax": 3.60,
+    "total": 48.60,
+    "status": "pending",
+    "shipping_address": "654 Birch Ln, Austin, TX 78701",
+    "warehouse": "AUS-01"
+  },
+  {
+    "id": "ORD-006",
+    "type": "order",
+    "date": "2024-01-20",
+    "items": [
+      {
+        "sku": "SKU-5555",
+        "name": "Ergonomic Chair",
+        "quantity": 1,
+        "unit_price": 199.99
+      }
+    ],
+    "subtotal": 199.99,
+    "tax": 16.00,
+    "total": 215.99,
+    "status": "cancelled",
+    "shipping_address": "987 Cedar Way, Denver, CO 80202",
+    "warehouse": "DEN-01",
+    "note": "INCONSISTENCY 3: Missing customer_id field"
+  }
+]

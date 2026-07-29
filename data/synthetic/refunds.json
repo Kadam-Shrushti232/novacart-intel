@@ -1,0 +1,84 @@
+[
+  {
+    "id": "REF-001",
+    "type": "refund",
+    "order_id": "ORD-001",
+    "customer_id": "CUST-A123",
+    "date": "2024-01-22",
+    "reason": "Defective product",
+    "items_refunded": [
+      {
+        "sku": "SKU-4521",
+        "name": "Wireless Mouse",
+        "quantity": 2,
+        "refund_amount": 59.98
+      }
+    ],
+    "total_refund": 59.98,
+    "status": "processed",
+    "processed_date": "2024-01-23",
+    "method": "original_payment"
+  },
+  {
+    "id": "REF-002",
+    "type": "refund",
+    "order_id": "ORD-002",
+    "customer_id": "CUST-B456",
+    "date": "2024-01-20",
+    "reason": "Wrong item shipped",
+    "items_refunded": [
+      {
+        "sku": "SKU-3301",
+        "name": "Mechanical Keyboard",
+        "quantity": 1,
+        "refund_amount": 89.99
+      }
+    ],
+    "total_refund": 89.99,
+    "status": "pending",
+    "method": "store_credit",
+    "policy_version": "2022-05-01",
+    "note": "INCONSISTENCY 1: Using outdated policy version (current is 2024-01-01)"
+  },
+  {
+    "id": "REF-003",
+    "type": "refund",
+    "order_id": "ORD-003",
+    "customer_id": "CUST-C789",
+    "date": "2024-01-19",
+    "reason": "Customer requested cancellation",
+    "items_refunded": [
+      {
+        "sku": "SKU-6645",
+        "name": "Monitor Stand",
+        "quantity": 1,
+        "refund_amount": 34.50
+      }
+    ],
+    "total_refund": 34.50,
+    "status": "processed",
+    "processed_date": "2024-01-20",
+    "method": "original_payment"
+  },
+  {
+    "id": "REF-003",
+    "type": "refund",
+    "order_id": "ORD-004",
+    "customer_id": "CUST-D012",
+    "date": "2024-01-21",
+    "reason": "Partial refund - item damaged",
+    "items_refunded": [
+      {
+        "sku": "SKU-2211",
+        "name": "Laptop Stand",
+        "quantity": 1,
+        "refund_amount": 45.00
+      }
+    ],
+    "total_refund": 45.00,
+    "status": "processed",
+    "processed_date": "2024-01-22",
+    "method": "original_payment",
+    "note": "INCONSISTENCY 2: Duplicate ID REF-003 (see REF-003 above)"
+  }
+]

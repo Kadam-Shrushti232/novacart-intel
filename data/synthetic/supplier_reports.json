@@ -1,0 +1,65 @@
+[
+  {
+    "id": "SUP-001",
+    "type": "supplier_quality_report",
+    "supplier_name": "ElectroTech Manufacturing",
+    "report_date": "2024-01-15",
+    "inspection_date": "2024-01-10",
+    "product_sku": "SKU-4521",
+    "product_name": "Wireless Mouse",
+    "batch_id": "BATCH-20240110-001",
+    "units_inspected": 500,
+    "units_passed": 485,
+    "units_failed": 15,
+    "defect_rate": "3.0%",
+    "defect_types": [
+      "Battery contact corrosion (8 units)",
+      "Button sticking (5 units)",
+      "Receiver malfunction (2 units)"
+    ],
+    "action_taken": "Batch held for rework. Supplier notified.",
+    "status": "resolved",
+    "follow_up_date": "2024-01-20"
+  },
+  {
+    "id": "SUP-002",
+    "type": "supplier_quality_report",
+    "supplier_name": "Precision Components Ltd",
+    "report_date": "2024-01-18",
+    "inspection_date": "2024-01-16",
+    "product_sku": "SKU-3301",
+    "product_name": "Mechanical Keyboard",
+    "batch_id": "BATCH-20240116-002",
+    "units_inspected": 300,
+    "units_passed": 298,
+    "units_failed": 2,
+    "defect_rate": "0.67%",
+    "defect_types": [
+      "Loose spacebar (2 units)"
+    ],
+    "action_taken": "Minor issue, batch approved with supplier acknowledgment.",
+    "status": "approved",
+    "follow_up_date": null
+  },
+  {
+    "id": "SUP-003",
+    "type": "supplier_quality_report",
+    "supplier_name": "GlobalWare Industries",
+    "report_date": "2024-01-22",
+    "inspection_date": "2024-01-20",
+    "product_sku": "SKU-5555",
+    "product_name": "Ergonomic Chair",
+    "batch_id": "BATCH-20240120-005",
+    "units_inspected": 100,
+    "units_passed": 95,
+    "units_failed": 5,
+    "defect_rate": "5.0%",
+    "defect_types": [
+      "Armrest misalignment (3 units)",
+      "Gas cylinder leak (2 units)"
+    ],
+    "action_taken": "Batch rejected. Full recall initiated. Supplier under review.",
+    "status": "critical",
+    "follow_up_date": "2024-01-25"
+  }
+]

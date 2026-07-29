@@ -1,0 +1,58 @@
+[
+  {
+    "id": "TKT-001",
+    "type": "support_ticket",
+    "customer_id": "CUST-A123",
+    "subject": "Mouse not responding",
+    "date_opened": "2024-01-22",
+    "date_closed": "2024-01-24",
+    "priority": "high",
+    "status": "resolved",
+    "category": "product_defect",
+    "description": "Wireless mouse stops working after 30 minutes. Tried resetting but still unresponsive.",
+    "resolution": "Sent replacement unit and confirmed customer received it.",
+    "assigned_to": "support_team_1"
+  },
+  {
+    "id": "TKT-002",
+    "type": "support_ticket",
+    "customer_id": "CUST-E345",
+    "subject": "Order status inquiry",
+    "date_opened": "2024-01-19",
+    "date_closed": "2024-01-20",
+    "priority": "low",
+    "status": "resolved",
+    "category": "order_status",
+    "description": "Customer wants to know when order ORD-005 will ship.",
+    "resolution": "Confirmed shipment is expected Jan 22, tracking number provided.",
+    "assigned_to": "support_team_2"
+  },
+  {
+    "id": "TKT-003",
+    "type": "support_ticket",
+    "customer_id": "CUST-B456",
+    "subject": "Billing inquiry",
+    "date_opened": "2024-01-20",
+    "date_closed": null,
+    "priority": "medium",
+    "status": "open",
+    "category": "billing",
+    "description": "Customer was double-charged for order ORD-002. Needs immediate refund.",
+    "resolution": null,
+    "assigned_to": "billing_team"
+  },
+  {
+    "id": "TKT-004",
+    "type": "support_ticket",
+    "customer_id": "CUST-C789",
+    "subject": "Shipping address incorrect",
+    "date_opened": "2024-01-17",
+    "date_closed": "2024-01-18",
+    "priority": "high",
+    "status": "resolved",
+    "category": "shipping",
+    "description": "Package was sent to wrong address. Customer requested redelivery.",
+    "resolution": "Intercepted package, rerouted to correct address (789 Pine Rd, Vancouver).",
+    "assigned_to": "logistics_team"
+  }
+]

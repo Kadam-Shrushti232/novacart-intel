@@ -1,0 +1,104 @@
+[
+  {
+    "id": "WH-001",
+    "type": "warehouse_log",
+    "warehouse_id": "PDX-01",
+    "warehouse_name": "Portland Distribution Center",
+    "date": "2024-01-15",
+    "time": "09:30:00",
+    "event_type": "shipment_processed",
+    "order_id": "ORD-001",
+    "items": [
+      {
+        "sku": "SKU-4521",
+        "name": "Wireless Mouse",
+        "quantity": 2
+      },
+      {
+        "sku": "SKU-7823",
+        "name": "USB-C Cable",
+        "quantity": 1
+      }
+    ],
+    "carrier": "FastShip Express",
+    "tracking_number": "FS20240115001",
+    "destination": "123 Oak St, Portland, OR 97201",
+    "weight_lbs": 2.5
+  },
+  {
+    "id": "WH-002",
+    "type": "warehouse_log",
+    "warehouse_id": "SEA-02",
+    "warehouse_name": "Seattle Fulfillment Hub",
+    "date": "2024-01-16",
+    "time": "14:15:00",
+    "event_type": "received_inventory",
+    "supplier": "ElectroTech Manufacturing",
+    "sku": "SKU-3301",
+    "product_name": "Mechanical Keyboard",
+    "batch_id": "BATCH-20240110-001",
+    "quantity_received": 485,
+    "quality_status": "approved_with_notes",
+    "notes": "3% defect rate from SUP-001. Hold for rework per quality team."
+  },
+  {
+    "id": "WH-003",
+    "type": "warehouse_log",
+    "warehouse_id": "LAX-03",
+    "warehouse_name": "Los Angeles Distribution Center",
+    "date": "2024-01-18",
+    "time": "11:45:00",
+    "event_type": "shipment_processed",
+    "order_id": "ORD-004",
+    "items": [
+      {
+        "sku": "SKU-2211",
+        "name": "Laptop Stand",
+        "quantity": 1
+      },
+      {
+        "sku": "SKU-4521",
+        "name": "Wireless Mouse",
+        "quantity": 1
+      }
+    ],
+    "carrier": "SwiftLogistics",
+    "tracking_number": "SL20240118002",
+    "destination": "321 Maple Dr, Los Angeles, CA 90001",
+    "weight_lbs": 3.1
+  },
+  {
+    "id": "WH-004",
+    "type": "warehouse_log",
+    "warehouse_id": "AUS-01",
+    "warehouse_name": "Austin Regional Warehouse",
+    "date": "2024-01-19",
+    "time": "16:20:00",
+    "event_type": "inventory_adjustment",
+    "sku": "SKU-9876",
+    "product_name": "Desk Lamp",
+    "quantity_change": -2,
+    "reason": "Allocated to order ORD-005",
+    "new_stock_level": 47,
+    "verified_by": "warehouse_staff_3"
+  },
+  {
+    "id": "WH-005",
+    "type": "warehouse_log",
+    "warehouse_id": "DEN-01",
+    "warehouse_name": "Denver Fulfillment Center",
+    "date": "2024-01-20",
+    "time": "10:00:00",
+    "event_type": "shipment_cancelled",
+    "order_id": "ORD-006",
+    "reason": "Customer cancelled order before shipment",
+    "items_returned_to_inventory": [
+      {
+        "sku": "SKU-5555",
+        "name": "Ergonomic Chair",
+        "quantity": 1
+      }
+    ],
+    "notes": "Quality alert on this SKU (SUP-003). Do not restock until recall resolved."
+  }
+]
