@@ -1,26 +1,28 @@
-import time
-from openai import OpenAI
-from app.core.config import get_settings
+from sentence_transformers import SentenceTransformer
+
+# Load model once at module level (cache in memory)
+_embedding_model = None
 
 
-def embed_text(text: str, max_retries: int = 1) -> list:
-    """Embed text using OpenAI text-embedding-3-small with retry logic."""
-    settings = get_settings()
-    client = OpenAI(api_key=settings.openai_api_key)
+def get_embedding_model():
+    """Get or initialize the sentence-transformers embedding model.
 
-    for attempt in range(max_retries + 1):
-        try:
-            response = client.embeddings.create(
-                model="text-embedding-3-small",
-                input=text,
-            )
-            return response.data[0].embedding
+    Uses 'all-MiniLM-L6-v2' for fast, free local embeddings. No API key required,
+    runs on CPU. Suitable for demonstration and development. For production,
+    consider OpenAI text-embedding-3-small or other high-quality API embeddings.
+    """
+    global _embedding_model
+    if _embedding_model is None:
+        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _embedding_model
 
-        except Exception as e:
-            if attempt < max_retries:
-                time.sleep(1)
-                continue
-            else:
-                raise RuntimeError(
-                    f"Failed to embed text after {max_retries + 1} attempts: {str(e)}"
-                ) from e
+
+def embed_text(text: str) -> list:
+    """Embed text using local sentence-transformers (all-MiniLM-L6-v2).
+
+    Runs on CPU, no API calls required, no quota limits.
+    Embedding dimension: 384
+    """
+    model = get_embedding_model()
+    embedding = model.encode(text, convert_to_tensor=False)
+    return embedding.tolist()
