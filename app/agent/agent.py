@@ -1,6 +1,6 @@
-"""Native Gemini agent with simple prompt-based reasoning for multi-hop questions.
+"""OpenRouter agent with simple prompt-based reasoning for multi-hop questions.
 
-This agent uses Google Gemini to autonomously decide which retrieval tools to call
+This agent uses OpenRouter with automatic model fallback to autonomously decide which retrieval tools to call
 and chain evidence across multiple sources using prompt-based planning.
 """
 
@@ -9,7 +9,7 @@ import re
 import json
 from dataclasses import dataclass
 from typing import Optional, List
-import google.generativeai as genai
+from openai import OpenAI
 from app.agent.tools import execute_tool
 
 
@@ -19,21 +19,29 @@ class AgentResponse:
     final_answer: str
     tool_calls: List[dict]  # List of {tool_name, tool_input, result}
     cited_records: List[str]  # List of record_ids cited in the answer
+    model_used: str = ""  # Track which model actually answered
 
 
 class RetrievalAgent:
-    """Single-agent tool-using reasoner with Gemini backend."""
+    """Single-agent tool-using reasoner with OpenRouter backend."""
 
     def __init__(self, api_key: Optional[str] = None):
-        """Initialize the agent with Gemini API key."""
-        api_key = api_key or os.environ.get("GEMINI_API_KEY")
-        if not api_key or api_key == "your-google-gemini-api-key-here":
+        """Initialize the agent with OpenRouter API key."""
+        api_key = api_key or os.environ.get("OPENROUTER_API_KEY")
+        if not api_key or api_key == "your-openrouter-api-key-here":
             raise ValueError(
-                "GEMINI_API_KEY not set or is placeholder. "
-                "Set a valid Gemini API key in .env"
+                "OPENROUTER_API_KEY not set or is placeholder. "
+                "Set a valid OpenRouter API key in .env"
             )
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-3.5-flash")
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url="https://openrouter.ai/api/v1"
+        )
+        self.models = [
+            "meta-llama/llama-3.3-70b-instruct",
+            "deepseek/deepseek-chat"
+        ]
+        self.model_used = ""
 
     def ask(self, question: str) -> AgentResponse:
         """Ask the agent a question and get back a reasoned answer with citations.
@@ -54,8 +62,24 @@ class RetrievalAgent:
 
         # Phase 1: Planning - decide which tools to call
         plan_prompt = self._build_planning_prompt(question)
-        plan_response = self.model.generate_content(plan_prompt)
-        plan_text = plan_response.text or ""
+        plan_response = None
+        last_error = None
+        for model in self.models:
+            try:
+                plan_response = self.client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": plan_prompt}],
+                    temperature=0,
+                    max_tokens=1024
+                )
+                self.model_used = plan_response.model
+                break
+            except Exception as e:
+                last_error = e
+                if model == self.models[-1]:
+                    raise last_error
+                continue
+        plan_text = plan_response.choices[0].message.content or ""
 
         # Phase 2: Execute tools based on plan
         tool_calls_text = self._extract_tool_calls(plan_text)
@@ -75,18 +99,35 @@ class RetrievalAgent:
         synthesis_prompt = self._build_synthesis_prompt(
             question, tool_calls
         )
-        synthesis_response = self.model.generate_content(synthesis_prompt)
-        final_answer = synthesis_response.text or ""
+        synthesis_response = None
+        last_error = None
+        for model in self.models:
+            try:
+                synthesis_response = self.client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": synthesis_prompt}],
+                    temperature=0,
+                    max_tokens=2048
+                )
+                self.model_used = synthesis_response.model
+                break
+            except Exception as e:
+                last_error = e
+                if model == self.models[-1]:
+                    raise last_error
+                continue
+        final_answer = synthesis_response.choices[0].message.content or ""
         cited_records = self._extract_citations(final_answer)
 
         return AgentResponse(
             final_answer=final_answer,
             tool_calls=tool_calls,
-            cited_records=cited_records
+            cited_records=cited_records,
+            model_used=self.model_used
         )
 
     def _build_planning_prompt(self, question: str) -> str:
-        """Build the planning prompt that asks Gemini which tools to call."""
+        """Build the planning prompt that asks which tools to call."""
         return f"""You are a data analyst helping answer questions about business operations.
 
 You have access to 5 search tools:
@@ -144,20 +185,35 @@ Evidence gathered:
 Provide a final answer that:
 1. Directly answers the question
 2. Cites specific record_ids for every claim: (source: RECORD-ID) or (sources: RECORD-ID1, RECORD-ID2)
-3. Explicitly notes any unsupported claims: "No data found to verify this claim" or "This cannot be verified from available records"
-4. Synthesizes findings across multiple searches if needed
-5. Is clear and actionable for business decision-making
+3. Only cite records that directly support your conclusion. Do NOT cite records you examined but found irrelevant or that showed no evidence.
+4. Explicitly notes any unsupported claims: "No data found to verify this claim" or "This cannot be verified from available records"
+5. Synthesizes findings across multiple searches if needed
+6. Is clear and actionable for business decision-making
 
 Keep your answer to 2-3 paragraphs maximum."""
 
     def _extract_citations(self, answer_text: str) -> List[str]:
-        """Extract all record_ids cited in the answer.
+        """Extract record_ids cited in (source: ...) or (sources: ...) markers.
 
-        Looks for patterns like:
-        - "REF-001"
-        - "(source: REF-001)"
-        - "(sources: REF-001, REF-002)"
+        Only extracts record_ids that appear inside explicit (source: ...)
+        or (sources: ...) markers. This ensures we only capture records
+        explicitly cited as supporting evidence, not just mentioned anywhere
+        in the text.
+
+        Patterns matched:
+        - (source: REF-001)
+        - (sources: REF-001, REF-002)
+        - (sources: REF-001, REF-002, REF-003)
         """
-        pattern = r'\b([A-Z]{2,}-\d{3}(?:#\d)?)\b'
-        matches = re.findall(pattern, answer_text)
+        # Match record_ids inside (source: ...) and (sources: ...) markers
+        pattern = r'\(sources?:\s*([^)]+)\)'
+        matches = []
+
+        for match in re.finditer(pattern, answer_text):
+            # Extract the content between "source:" and ")"
+            content = match.group(1)
+            # Find all record_ids in this content (separated by commas)
+            record_ids = re.findall(r'\b([A-Z]{2,}-\d{3}(?:#\d)?)\b', content)
+            matches.extend(record_ids)
+
         return sorted(set(matches))
