@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from typing import Optional, List
 from openai import OpenAI
 from app.agent.tools import execute_tool
+from app.core.config import get_settings
 
 
 @dataclass
@@ -27,7 +28,9 @@ class RetrievalAgent:
 
     def __init__(self, api_key: Optional[str] = None):
         """Initialize the agent with OpenRouter API key."""
-        api_key = api_key or os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            settings = get_settings()
+            api_key = settings.openrouter_api_key
         if not api_key or api_key == "your-openrouter-api-key-here":
             raise ValueError(
                 "OPENROUTER_API_KEY not set or is placeholder. "
