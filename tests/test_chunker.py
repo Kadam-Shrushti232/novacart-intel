@@ -67,3 +67,67 @@ def test_missing_customer_id_handled():
 
     assert "UNKNOWN" in chunk.text
     assert chunk.metadata["customer_id"] is None
+
+
+def test_chunking_produces_one_chunk_per_record():
+    """Verify that chunking produces exactly one chunk per record (no splitting)."""
+    records = [
+        LoadedRecord(
+            data={
+                "id": "ORD-001",
+                "type": "order",
+                "date": "2024-01-15",
+                "customer_id": "CUST-A123",
+                "items": [{"name": "Mouse", "quantity": 2}],
+                "total": 100.0,
+                "status": "shipped",
+                "shipping_address": "123 Main St",
+                "warehouse": "PDX-01",
+            },
+            source_type="order",
+        ),
+        LoadedRecord(
+            data={
+                "id": "REF-001",
+                "type": "refund",
+                "date": "2024-01-20",
+                "customer_id": "CUST-B456",
+                "order_id": "ORD-001",
+                "reason": "Wrong item",
+                "items_refunded": [{"name": "Keyboard", "quantity": 1}],
+                "total_refund": 97.19,
+                "status": "processed",
+                "method": "original_payment",
+            },
+            source_type="refund",
+        ),
+    ]
+
+    chunks = [chunk_record(record) for record in records]
+
+    assert len(chunks) == 2
+    assert chunks[0].record_id == "ORD-001"
+    assert chunks[1].record_id == "REF-001"
+
+
+def test_metadata_includes_date_int_for_filtering():
+    """Test that metadata includes date_int field for range filtering."""
+    record = LoadedRecord(
+        data={
+            "id": "ORD-001",
+            "type": "order",
+            "date": "2024-01-15",
+            "customer_id": "CUST-A123",
+            "items": [{"name": "Mouse", "quantity": 2}],
+            "total": 100.0,
+            "status": "shipped",
+            "shipping_address": "123 Main St",
+            "warehouse": "PDX-01",
+        },
+        source_type="order",
+    )
+
+    chunk = chunk_record(record)
+
+    assert chunk.metadata["date_int"] == 20240115
+    assert isinstance(chunk.metadata["date_int"], int)
