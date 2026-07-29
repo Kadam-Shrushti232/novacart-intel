@@ -1,5 +1,3 @@
-from sentence_transformers import SentenceTransformer
-
 # Load model once at module level (cache in memory)
 _embedding_model = None
 
@@ -10,9 +8,13 @@ def get_embedding_model():
     Uses 'all-MiniLM-L6-v2' for fast, free local embeddings. No API key required,
     runs on CPU. Suitable for demonstration and development. For production,
     consider OpenAI text-embedding-3-small or other high-quality API embeddings.
+
+    Import deferred to function level to avoid loading torch at app startup,
+    reducing memory footprint on resource-constrained deployments (e.g., Render free tier).
     """
     global _embedding_model
     if _embedding_model is None:
+        from sentence_transformers import SentenceTransformer
         _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     return _embedding_model
 
