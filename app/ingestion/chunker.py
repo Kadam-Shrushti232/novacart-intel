@@ -77,14 +77,29 @@ def record_to_text(record: LoadedRecord) -> str:
 
 
 def extract_metadata(record: LoadedRecord) -> dict:
-    """Extract a consistent metadata schema from any record type."""
+    """Extract a consistent metadata schema from any record type.
+    Includes date_int (YYYYMMDD integer) for proper Chroma range filtering.
+    """
     data = record.data
     source_type = record.source_type
+
+    # Extract date string from the appropriate field
+    date_str = data.get("date", data.get("date_opened", data.get("report_date")))
+
+    # Convert date string to YYYYMMDD integer for Chroma $gte/$lte operators
+    date_int = None
+    if date_str:
+        try:
+            # Expected format: YYYY-MM-DD
+            date_int = int(date_str.replace("-", ""))
+        except (ValueError, AttributeError):
+            date_int = None
 
     metadata = {
         "source_type": source_type,
         "record_id": data.get("id", "unknown"),
-        "date": data.get("date", data.get("date_opened", None)),
+        "date": date_str,
+        "date_int": date_int,
         "category": None,
         "status": data.get("status", None),
     }

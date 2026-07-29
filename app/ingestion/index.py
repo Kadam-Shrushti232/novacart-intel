@@ -55,10 +55,13 @@ def index_chunks(chunks: list, collection_name: str = "novacart_docs") -> int:
 
         # Chroma doesn't support None values; convert to empty string
         # (preserves schema while making fields filterable)
+        # Keep date_int as integer for Chroma $gte/$lte operators
         clean_metadata = {}
         for key, value in metadata.items():
             if value is None:
                 clean_metadata[key] = ""
+            elif key == "date_int" and isinstance(value, int):
+                clean_metadata[key] = value  # Keep as int for range queries
             else:
                 clean_metadata[key] = str(value)  # Ensure all values are serializable
 
